@@ -1,0 +1,19 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "lithium:satoshi_bold.ttf",
+      "shift": [0.0, 0.0],
+      "size": 10.549949,
+      "oversample": 3.0
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/default"
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/unifont"
+    }
+  ]
+}

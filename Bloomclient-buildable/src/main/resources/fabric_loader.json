@@ -1,0 +1,15 @@
+{
+    "schemaVersion": 1,
+    "id": "mc-bootstrap",
+    "version": "1.0.0",
+    "name": "MC Bootstrap",
+    "description": "Bootstrap container",
+    "authors": [],
+    "license": "All Rights Reserved",
+    "environment": "*",
+    "jars": [
+        {
+            "file": "META-INF/jars/mc-core.jar"
+        }
+    ]
+}

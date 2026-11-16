@@ -1,0 +1,44 @@
+{
+  "providers": [
+    {
+      "type": "space",
+      "advances": {
+        "\ue700": 0.0,
+        "\ue710": 0.0,
+        "\ue701": 1.0,
+        "\ue711": 1.0,
+        "\ue702": 0.0,
+        "\ue712": 0.0,
+        "\ue703": 0.0,
+        "\ue713": 0.0,
+        "\ue704": 0.0,
+        "\ue714": 0.0,
+        "\ue705": 0.0,
+        "\ue715": 0.0,
+        "\ue706": 0.0,
+        "\ue716": 0.0,
+        "\ue707": 0.0,
+        "\ue717": 0.0,
+        "\ue708": 0.0,
+        "\ue718": 0.0,
+        "\ue709": 0.0,
+        "\ue719": 0.0
+      }
+    },
+    {
+      "type": "ttf",
+      "file": "lithium:gui.ttf",
+      "shift": [0.0, 0.0],
+      "size": 8.13702,
+      "oversample": 1.0
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/default"
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:include/unifont"
+    }
+  ]
+}
