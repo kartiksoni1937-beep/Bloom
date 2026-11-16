@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin({ClientPlayerEntity.class})
 public class ParserGatherer {
    @Inject(
-      method = {"tickMovement()Z"},
+      method = {"tickMovement()V"},
       at = {@At("HEAD")}
    )
    private void a(CallbackInfo var1) {
