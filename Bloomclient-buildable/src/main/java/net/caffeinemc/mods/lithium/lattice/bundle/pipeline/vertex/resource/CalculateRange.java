@@ -77,6 +77,10 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
    private int bd;
    private BlockPos pendingCrystalPos;
    private int pendingCrystalAge = Integer.MIN_VALUE;
+   // Strict boolean lock: an attack packet may never share a tick with a crystal
+   // placement. Set after the placement packet, cleared at the start of a client tick.
+   private boolean justPlacedCrystal = false;
+   private Runnable crystalTickReset;
    private static int be = Runtime.getRuntime().availableProcessors() - Runtime.getRuntime().availableProcessors();
 
    public CalculateRange() {
@@ -150,6 +154,8 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
       this.bb = 4;
       this.bc = -1;
       FrameClockCache.add(this.au);
+      this.crystalTickReset = this::resetCrystalLock;
+      FrameClockCache.addTickStart(this.crystalTickReset);
       super.c();
    }
 
@@ -159,6 +165,11 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
       this.b.b(InitNotifier.class, this);
       this.b.b(net.caffeinemc.mods.lithium.lattice.bundle.pipeline.cluster.CalculateRange.class, this);
       FrameClockCache.b(this.au);
+      if (this.crystalTickReset != null) {
+         FrameClockCache.removeTickStart(this.crystalTickReset);
+         this.crystalTickReset = null;
+      }
+      this.justPlacedCrystal = false;
       if (this.bc != -1 && a.player != null && !FrameClockCache.i(a.player)) {
          this.bc = -1;
       }
@@ -256,6 +267,7 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
                   return;
                }
                GridResolver.a(var6, true);
+               this.justPlacedCrystal = true;
                this.pendingCrystalPos = var6.getBlockPos().up();
                this.pendingCrystalAge = a.player.age;
                if (this.ac.f() && (double)var7 <= this.ag.f() && NodeKeeper.a(var6.getBlockPos()) && var6.getSide() == Direction.UP) {
@@ -283,6 +295,9 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
          if (var1 instanceof EntityHitResult var11) {
             Entity var12 = var11.getEntity();
             this.d(var12);
+            if (this.justPlacedCrystal) {
+               return;
+            }
             // Never combine a placement and an entity attack in the same tick, and never
             // attack an entity the client world does not actually know about.
             if (var12 instanceof EndCrystalEntity && a.player.age == this.pendingCrystalAge) {
@@ -349,8 +364,12 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
 
       return a.world != null
          && !a.world.getBlockState(var1).isAir()
-         && !a.world.getBlockState(var1.down()).isAir()
+         && a.world.getBlockState(var1.down()).isSolid()
          && a.world.getBlockState(var1.up()).isAir();
+   }
+
+   private void resetCrystalLock() {
+      this.justPlacedCrystal = false;
    }
 
    private boolean isKnownEntity(Entity var1) {
@@ -363,6 +382,10 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
    }
 
    private void attackPendingCrystal() {
+
+      if (this.justPlacedCrystal) {
+         return;
+      }
 
       if (this.pendingCrystalPos == null) {
          return;
@@ -386,6 +409,9 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
 
       for (Entity var4 : a.world.getOtherEntities(null, new Box(var1))) {
          if (var4 instanceof EndCrystalEntity && this.isKnownEntity(var4) && var4.getBlockPos().equals(var1)) {
+            if (this.justPlacedCrystal) {
+               return;
+            }
             GridResolver.a(var4, true);
             this.ay = var4;
             this.az = a.player.age;
@@ -523,6 +549,9 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
                         continue;
                      }
                   case 5:
+                     if (this.justPlacedCrystal) {
+                        return false;
+                     }
                      GridResolver.a(var1, true);
                      this.d(var1);
                      this.ay = var1;
@@ -583,7 +612,7 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
          && (!this.ab.f() || !GridResolver.a())) {
          if (!this.af.f() || !this.p() || InitExecutor.a(a.player.getMainHandStack().getItem())) {
             Entity var1 = this.k_r10();
-            if (var1 != null) {
+            if (var1 != null && !this.justPlacedCrystal) {
                GridResolver.a(var1, true);
             }
          }
