@@ -282,7 +282,7 @@ public class ItemModelCache {
    }
 
    @Inject(
-      method = {"renderFirstPersonItem(Lnet/minecraft/n;FFLnet/minecraft/n;FLnet/minecraft/n;FLnet/minecraft/n;Lnet/minecraft/n;I)V"},
+      method = {"renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V"},
       at = {@At("HEAD")},
       cancellable = true,
       require = 0
@@ -368,7 +368,7 @@ public class ItemModelCache {
    }
 
    @Inject(
-      method = {"renderFirstPersonItem(Lnet/minecraft/n;FFLnet/minecraft/n;FLnet/minecraft/n;FLnet/minecraft/n;Lnet/minecraft/n;I)V"},
+      method = {"renderFirstPersonItem(Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;I)V"},
       at = {@At(
          value = "INVOKE",
          target = "Lnet/minecraft/n;push()V",

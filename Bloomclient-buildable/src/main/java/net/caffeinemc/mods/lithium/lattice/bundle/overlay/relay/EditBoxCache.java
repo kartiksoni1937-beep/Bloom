@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value={EditBoxWidget.class})
 public abstract class EditBoxCache {
-    @Inject(method={"renderContents(Lnet/minecraft/n;IIF)V"}, at={@At(value="HEAD")})
+    @Inject(method={"renderContents(Lnet/minecraft/client/gui/DrawContext;IIF)V"}, at={@At(value="HEAD")})
     private void a(DrawContext var1, int var2, int var3, float var4, CallbackInfo var5) {
         ProfileTextCache.EDIT = true;
     }
 
-    @Inject(method={"renderContents(Lnet/minecraft/n;IIF)V"}, at={@At(value="RETURN")})
+    @Inject(method={"renderContents(Lnet/minecraft/client/gui/DrawContext;IIF)V"}, at={@At(value="RETURN")})
     private void b(DrawContext var1, int var2, int var3, float var4, CallbackInfo var5) {
         ProfileTextCache.EDIT = false;
     }

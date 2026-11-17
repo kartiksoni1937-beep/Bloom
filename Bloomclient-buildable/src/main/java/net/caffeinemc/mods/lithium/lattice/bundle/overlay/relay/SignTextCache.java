@@ -33,7 +33,7 @@ public abstract class SignTextCache {
     @Unique
     private int b;
 
-    @Inject(method={"getOrderedMessages(ZL;Ljava/util/function/Function;)[Lnet/minecraft/text/OrderedText;"}, at={@At(value="HEAD")})
+    @Inject(method={"getOrderedMessages(ZLjava/util/function/Function;)[Lnet/minecraft/text/OrderedText;"}, at={@At(value="HEAD")})
     private void a(boolean var1, Function<Text, OrderedText> var2, CallbackInfoReturnable<OrderedText[]> var3) {
         int var4 = ProfileTextCache.GEN;
         if (this.b != var4) {

@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value={WorldRenderer.class})
 public class LoaderEngine {
-    @Inject(method={"render(Lnet/minecraft/n;Lnet/minecraft/n;ZLnet/minecraft/n;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"}, at={@At(value="HEAD")})
+    @Inject(method={"render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"}, at={@At(value="HEAD")})
     private void a(ObjectAllocator var1, RenderTickCounter var2, boolean var3, Camera var4, Matrix4f var5, Matrix4f var6, Matrix4f var7, GpuBufferSlice var8, Vector4f var9, boolean var10, CallbackInfo var11) {
         CoreOptimizer.a(var6, var5);
         if (ConfigBridge.c != null && BoundQuadCache.OL && System.identityHashCode(MinecraftClient.getInstance().world) != BoundQuadCache.OWID) {
@@ -45,7 +45,7 @@ public class LoaderEngine {
         }
     }
 
-    @Inject(method={"render(Lnet/minecraft/n;Lnet/minecraft/n;ZLnet/minecraft/n;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"}, at={@At(value="TAIL")})
+    @Inject(method={"render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"}, at={@At(value="TAIL")})
     private void b(ObjectAllocator var1, RenderTickCounter var2, boolean var3, Camera var4, Matrix4f var5, Matrix4f var6, Matrix4f var7, GpuBufferSlice var8, Vector4f var9, boolean var10, CallbackInfo var11) {
         if (ConfigBridge.c != null) {
             boolean var12 = NodeCacheGroup.RUN;

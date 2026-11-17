@@ -107,7 +107,7 @@ public class CacheDelegate {
         }
     }
 
-    @Inject(method={"renderOverlayMessage(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="HEAD")}, require=0)
+    @Inject(method={"renderOverlayMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"}, at={@At(value="HEAD")}, require=0)
     private void e(DrawContext var1, RenderTickCounter var2, CallbackInfo var3) {
         float var4;
         CoreZoneProcessor.LIFT_PUSHED = false;
@@ -125,7 +125,7 @@ public class CacheDelegate {
         }
     }
 
-    @Inject(method={"renderOverlayMessage(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="RETURN")}, require=0)
+    @Inject(method={"renderOverlayMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"}, at={@At(value="RETURN")}, require=0)
     private void f(DrawContext var1, RenderTickCounter var2, CallbackInfo var3) {
         if (CoreZoneProcessor.LIFT_PUSHED) {
             CoreZoneProcessor.LIFT_PUSHED = false;

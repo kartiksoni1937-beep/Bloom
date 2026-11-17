@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value={EnvironmentAttributeInterpolator.class})
 public class RenderQuality {
-    @Inject(method={"get(Lnet/minecraft/world/attribute/EnvironmentAttribute;F)L;Ljava/lang/Object;"}, at={@At(value="RETURN")}, cancellable=true, require=0)
+    @Inject(method={"get(Lnet/minecraft/world/attribute/EnvironmentAttribute;F)Ljava/lang/Object;"}, at={@At(value="RETURN")}, cancellable=true, require=0)
     private void a(EnvironmentAttribute<?> var1, float var2, CallbackInfoReturnable<Object> var3) {
         boolean var4 = LerpZoneBuffer.ae;
         boolean var5 = NodeZoneRenderer.SKY_HOT;

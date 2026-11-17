@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value={GameRenderer.class})
 public class RenderViewState {
-    @ModifyArg(method={"renderWorld(Lnet/minecraft/n;)V"}, at=@At(value="INVOKE", target="Lnet/minecraft/n;render(Lnet/minecraft/n;Lnet/minecraft/n;ZLnet/minecraft/n;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"), index=4, require=0)
+    @ModifyArg(method={"renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"), index=4, require=0)
     private Matrix4f a(Matrix4f var1) {
         if (FrameKeeper.ag) {
             try {
@@ -40,7 +40,7 @@ public class RenderViewState {
         return var1;
     }
 
-    @ModifyArg(method={"renderWorld(Lnet/minecraft/n;)V"}, at=@At(value="INVOKE", target="Lnet/minecraft/n;render(Lnet/minecraft/n;Lnet/minecraft/n;ZLnet/minecraft/n;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"), index=5, require=0)
+    @ModifyArg(method={"renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V"}, at=@At(value="INVOKE", target="Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/ObjectAllocator;Lnet/minecraft/client/render/RenderTickCounter;ZLnet/minecraft/client/render/Camera;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Vector4f;Z)V"), index=5, require=0)
     private Matrix4f b(Matrix4f var1) {
         if (FrameKeeper.ag) {
             try {
@@ -54,7 +54,7 @@ public class RenderViewState {
         return var1;
     }
 
-    @Inject(method={"renderHand(FZL;Lorg/joml/Matrix4f;)V"}, at={@At(value="HEAD")}, cancellable=true, require=0)
+    @Inject(method={"renderHand(FZLorg/joml/Matrix4f;)V"}, at={@At(value="HEAD")}, cancellable=true, require=0)
     private void c(float var1, boolean var2, Matrix4f var3, CallbackInfo var4) {
         if (ConfigBridge.c != null && LockD.g) {
             try {

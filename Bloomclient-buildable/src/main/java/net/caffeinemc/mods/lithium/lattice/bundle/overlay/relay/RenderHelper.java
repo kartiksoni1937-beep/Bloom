@@ -121,7 +121,7 @@ public class RenderHelper {
     @Unique
     private static float ai;
 
-    @Inject(method={"renderCrosshair(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="HEAD")}, cancellable=true)
+    @Inject(method={"renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"}, at={@At(value="HEAD")}, cancellable=true)
     private void a(DrawContext var1, RenderTickCounter var2, CallbackInfo var3) {
         aa = false;
         if (y == 0.0f) {
@@ -199,7 +199,7 @@ public class RenderHelper {
         return false;
     }
 
-    @Inject(method={"renderCrosshair(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="TAIL")})
+    @Inject(method={"renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"}, at={@At(value="TAIL")})
     private void c(DrawContext var1, RenderTickCounter var2, CallbackInfo var3) {
         if (aa) {
             NodeZoneRenderer var4 = null;

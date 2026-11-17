@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Specification-Title: Clumps
 Specification-Vendor: Jared
-Specification-Version: 29.0.0.3
+Specification-Version: 29.0.0.4
 Implementation-Title: fabric
-Implementation-Version: 29.0.0.3
+Implementation-Version: 29.0.0.4
 Implementation-Vendor: Jared
 Built-On-Java: 21.0.3+9-LTS (Eclipse Adoptium)
 Build-On-Minecraft: 1.21.11

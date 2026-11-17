@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value={AbstractSignEditScreen.class})
 public abstract class SignEditCache {
-    @Inject(method={"renderSignText(Lnet/minecraft/n;)V"}, at={@At(value="HEAD")})
+    @Inject(method={"renderSignText(Lnet/minecraft/client/gui/DrawContext;)V"}, at={@At(value="HEAD")})
     private void a(DrawContext var1, CallbackInfo var2) {
         ProfileTextCache.EDIT = true;
     }
 
-    @Inject(method={"renderSignText(Lnet/minecraft/n;)V"}, at={@At(value="RETURN")})
+    @Inject(method={"renderSignText(Lnet/minecraft/client/gui/DrawContext;)V"}, at={@At(value="RETURN")})
     private void b(DrawContext var1, CallbackInfo var2) {
         ProfileTextCache.EDIT = false;
     }

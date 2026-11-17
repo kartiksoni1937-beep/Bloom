@@ -50,7 +50,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value={ClientPlayerInteractionManager.class})
 public class InteractionProbe {
-    @Inject(method={"attackEntity(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="HEAD")}, require=0)
+    @Inject(method={"attackEntity(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;)V"}, at={@At(value="HEAD")}, require=0)
     private void a(PlayerEntity var1, Entity var2, CallbackInfo var3) {
         NodeZoneRenderer var4 = null;
         try {
@@ -138,7 +138,7 @@ public class InteractionProbe {
         }
     }
 
-    @Inject(method={"attackEntity(Lnet/minecraft/n;Lnet/minecraft/n;)V"}, at={@At(value="RETURN")}, require=0)
+    @Inject(method={"attackEntity(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;)V"}, at={@At(value="RETURN")}, require=0)
     private void h(PlayerEntity var1, Entity var2, CallbackInfo var3) {
         CoreCacheKeeper var4 = null;
         try {
