@@ -8,6 +8,9 @@ public final class FrameClockCache {
    public static int m = Integer.MIN_VALUE;
    public static volatile boolean any;
    public static volatile boolean n;
+   // Tick of the last block interaction. An attack is not allowed in the same tick,
+   // otherwise one tick can contain both a block placement and an entity attack.
+   public static volatile int interactBlockAge = Integer.MIN_VALUE;
    private static volatile Runnable[] o = new Runnable[0];
    private static volatile Runnable[] p = new Runnable[0];
 
@@ -105,6 +108,16 @@ public final class FrameClockCache {
    public static boolean i(ClientPlayerEntity var0) {
 
       return var0 != null && var0.age != l;
+   }
+
+   public static void markInteractBlock(ClientPlayerEntity var0) {
+      if (var0 != null) {
+         interactBlockAge = var0.age;
+      }
+   }
+
+   public static boolean canRequestAttack(ClientPlayerEntity var0) {
+      return var0 == null || interactBlockAge != var0.age;
    }
 
    public static void j(ClientPlayerEntity var0) {

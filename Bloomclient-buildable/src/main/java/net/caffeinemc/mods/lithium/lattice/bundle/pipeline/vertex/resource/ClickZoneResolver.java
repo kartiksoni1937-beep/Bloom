@@ -82,6 +82,9 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
    private int cb;
    private boolean cc;
    private int cd;
+   private boolean pendingCharge;
+   private BlockPos pendingChargePos;
+   private int pendingChargeAge = Integer.MIN_VALUE;
    private final Set<BlockPos> ce;
    private static int cf = Runtime.getRuntime().availableProcessors() - Runtime.getRuntime().availableProcessors();
 
@@ -275,6 +278,7 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
       this.bq = null;
       this.br = 0;
       this.cd = 0;
+      this.clearPendingCharge();
       int var1 = this.au.g();
       this.cc = var1 != -1 && SlotInspector.a(var1);
       at = this.cc;
@@ -301,6 +305,7 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
       this.bq = null;
       this.br = 0;
       this.cd = 0;
+      this.clearPendingCharge();
       as = false;
       super.d();
    }
@@ -533,6 +538,13 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
          BlockHitResult var1 = this.z();
          if (var1 != null) {
             this.bp = this.aa(var1);
+            // Strict placement state: the target must be empty and supported below.
+            if (this.bp == null
+               || !a.world.getBlockState(this.bp).isReplaceable()
+               || a.world.getBlockState(this.bp.down()).isAir()) {
+               this.aj();
+               return;
+            }
             if (a.player.getMainHandStack().isOf(Items.RESPAWN_ANCHOR) || this.n(Items.RESPAWN_ANCHOR)) {
                if (this.u(a.player)) {
                   this.bu = a.player.age;
@@ -542,6 +554,10 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
                   this.x(var1);
                   this.ce.add(this.bp);
                   this.ae();
+                  // The glowstone packet may not share this tick with the anchor packet.
+                  this.pendingCharge = true;
+                  this.pendingChargePos = this.bp;
+                  this.pendingChargeAge = a.player.age;
                   this.bl = 2;
                }
             }
@@ -550,6 +566,22 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
    }
 
    private void l_r17() {
+
+      if (this.pendingCharge) {
+         if (a.player == null || a.player.age <= this.pendingChargeAge) {
+            return;
+         }
+         // Never charge from ghost data: the anchor must still be there, uncharged, with
+         // a solid block underneath.
+         if (this.pendingChargePos == null
+            || !TaskJoiner.a(this.pendingChargePos, Blocks.RESPAWN_ANCHOR)
+            || (Integer)a.world.getBlockState(this.pendingChargePos).get(RespawnAnchorBlock.CHARGES) != 0
+            || a.world.getBlockState(this.pendingChargePos.down()).isAir()) {
+            this.clearPendingCharge();
+            this.aj();
+            return;
+         }
+      }
 
       if (this.ag(this.bp)) {
          if (this.ah(this.bp)) {
@@ -569,12 +601,14 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
                   var1 = CalculateMapper.a(var2, var3);
                }
 
-               BlockHitResult var4 = this.ac(this.bp);
+               BlockPos var6 = this.pendingCharge && this.pendingChargePos != null ? this.pendingChargePos : this.bp;
+               BlockHitResult var4 = this.ac(var6);
 
                for (int var5 = 0; var5 < var1; var5++) {
                   this.x(var4);
                }
 
+               this.clearPendingCharge();
                this.bm = this.o() + this.bb.ns();
                this.bn = this.q() + r(this.bb.p());
                this.bl = 3;
@@ -853,13 +887,20 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
          }
       }
 
+      this.clearPendingCharge();
       this.bl = 0;
       this.bo = 0;
       this.bp = null;
    }
 
+   private void clearPendingCharge() {
+      this.pendingCharge = false;
+      this.pendingChargePos = null;
+   }
+
    private void aj() {
 
+      this.clearPendingCharge();
       this.bl = 0;
       this.bo = 0;
       this.bm = System.nanoTime();

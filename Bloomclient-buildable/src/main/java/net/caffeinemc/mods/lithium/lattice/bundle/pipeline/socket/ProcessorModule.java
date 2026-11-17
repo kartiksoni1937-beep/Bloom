@@ -313,6 +313,15 @@ public class ProcessorModule extends BuilderFactory implements InitNotifier, Cal
                var6 = CalculateMapper.a(var7, var8);
             }
 
+            // Validate the target before charging: it must still be an uncharged anchor
+            // with solid support, otherwise the packet is physically impossible.
+            if (!a.world.getBlockState(var2).isOf(Blocks.RESPAWN_ANCHOR)
+               || (Integer)a.world.getBlockState(var2).get(RespawnAnchorBlock.CHARGES) != 0
+               || a.world.getBlockState(var2.down()).isAir()) {
+               this.t(var3);
+               return;
+            }
+
             for (int var10 = 0; var10 < var6; var10++) {
                if (this.ac.f()) {
                   BufferNormalizer.d(1);
@@ -388,6 +397,13 @@ public class ProcessorModule extends BuilderFactory implements InitNotifier, Cal
             if (var6 <= this.aj.g()) {
                this.aw = false;
                if (var7) {
+                  // Only detonate an anchor that still exists and actually has charges.
+                  if (!a.world.getBlockState(var2).isOf(Blocks.RESPAWN_ANCHOR)
+                     || (Integer)a.world.getBlockState(var2).get(RespawnAnchorBlock.CHARGES) <= 0) {
+                     this.t(var3);
+                     return;
+                  }
+
                   if (this.ac.f()) {
                      BufferNormalizer.d(1);
                   }

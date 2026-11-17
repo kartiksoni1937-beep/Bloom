@@ -50,10 +50,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value={ClientPlayerInteractionManager.class})
 public class InteractionProbe {
-    @Inject(method={"attackEntity(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;)V"}, at={@At(value="HEAD")}, require=0)
+    @Inject(method={"attackEntity(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;)V"}, at={@At(value="HEAD")}, require=0, cancellable=true)
     private void a(PlayerEntity var1, Entity var2, CallbackInfo var3) {
         NodeZoneRenderer var4 = null;
         try {
+            if (!FrameClockCache.canRequestAttack((ClientPlayerEntity) var1)) {
+                var3.cancel();
+                return;
+            }
             FrameClockCache.l = var1.age;
             if (ConfigBridge.c == null || !ConfigBridge.c.a() || ConfigBridge.c.c() == null) {
                 return;
@@ -76,6 +80,7 @@ public class InteractionProbe {
     private void b(ClientPlayerEntity var1, Hand var2, BlockHitResult var3, CallbackInfoReturnable<ActionResult> var4) {
         try {
             FrameClockCache.l = var1.age;
+            FrameClockCache.markInteractBlock(var1);
         }
         catch (Throwable throwable) {
             // empty catch block

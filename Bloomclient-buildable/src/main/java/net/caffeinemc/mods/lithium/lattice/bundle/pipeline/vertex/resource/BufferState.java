@@ -309,6 +309,12 @@ public final class BufferState extends BuilderFactory implements InitNotifier, n
 
             int var8 = this.ao.f() ? this.av : 1;
 
+            // Re-check the anchor immediately before the charge packet: no ghost charging.
+            if (!this.u(var2) || a.world.getBlockState(var2.down()).isAir()) {
+               this.p(var3);
+               return;
+            }
+
             for (int var9 = 0; var9 < var8; var9++) {
                if (this.ad.f()) {
                   BufferNormalizer.d(1);

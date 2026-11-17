@@ -75,6 +75,8 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
    private int bb;
    private int bc;
    private int bd;
+   private BlockPos pendingCrystalPos;
+   private int pendingCrystalAge = Integer.MIN_VALUE;
    private static int be = Runtime.getRuntime().availableProcessors() - Runtime.getRuntime().availableProcessors();
 
    public CalculateRange() {
@@ -167,12 +169,14 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
       this.av = 0;
       this.aw = null;
       this.ay = null;
+      this.pendingCrystalPos = null;
       super.d();
    }
 
    @Override
    public void a() {
 
+      this.attackPendingCrystal();
       if (this.bc != -1) {
          if (a.player == null) {
             this.bc = -1;
@@ -247,7 +251,13 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
                   BufferNormalizer.d(1);
                }
 
+               if (!this.canPlaceCrystal(var6.getBlockPos())) {
+                  this.ao = e(this.ao, var3) + 50000000L;
+                  return;
+               }
                GridResolver.a(var6, true);
+               this.pendingCrystalPos = var6.getBlockPos().up();
+               this.pendingCrystalAge = a.player.age;
                if (this.ac.f() && (double)var7 <= this.ag.f() && NodeKeeper.a(var6.getBlockPos()) && var6.getSide() == Direction.UP) {
                   a.particleManager
                      .addParticle(
@@ -273,6 +283,14 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
          if (var1 instanceof EntityHitResult var11) {
             Entity var12 = var11.getEntity();
             this.d(var12);
+            // Never combine a placement and an entity attack in the same tick, and never
+            // attack an entity the client world does not actually know about.
+            if (var12 instanceof EndCrystalEntity && a.player.age == this.pendingCrystalAge) {
+               return;
+            }
+            if (!this.isKnownEntity(var12)) {
+               return;
+            }
             if (var5 || var3 - this.ap < 0L) {
                return;
             }
@@ -323,6 +341,56 @@ public final class CalculateRange extends BuilderFactory implements InitNotifier
                   this.bd = var10;
                }
             }
+         }
+      }
+   }
+
+   private boolean canPlaceCrystal(BlockPos var1) {
+
+      return a.world != null
+         && !a.world.getBlockState(var1).isAir()
+         && !a.world.getBlockState(var1.down()).isAir()
+         && a.world.getBlockState(var1.up()).isAir();
+   }
+
+   private boolean isKnownEntity(Entity var1) {
+
+      return var1 != null
+         && a.world != null
+         && !var1.isRemoved()
+         && var1.isAlive()
+         && a.world.getEntityById(var1.getId()) == var1;
+   }
+
+   private void attackPendingCrystal() {
+
+      if (this.pendingCrystalPos == null) {
+         return;
+      }
+
+      if (a.player == null || a.world == null || a.interactionManager == null) {
+         this.pendingCrystalPos = null;
+         return;
+      }
+
+      // The crystal must exist in the client world before an attack may be sent.
+      if (a.player.age <= this.pendingCrystalAge) {
+         return;
+      }
+
+      BlockPos var1 = this.pendingCrystalPos;
+      this.pendingCrystalPos = null;
+      if (a.player.age - this.pendingCrystalAge > 10) {
+         return;
+      }
+
+      for (Entity var4 : a.world.getOtherEntities(null, new Box(var1))) {
+         if (var4 instanceof EndCrystalEntity && this.isKnownEntity(var4) && var4.getBlockPos().equals(var1)) {
+            GridResolver.a(var4, true);
+            this.ay = var4;
+            this.az = a.player.age;
+            this.ba = System.nanoTime();
+            return;
          }
       }
    }
