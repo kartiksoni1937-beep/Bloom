@@ -134,7 +134,7 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
 
    @ModifyVariable(
       index = 3,
-      method = {"repairPlayerGears(Lnet/minecraft/entity/ExperienceOrbEntity;I)I"},
+      method = {"repairPlayerGears(Lnet/minecraft/server/network/ServerPlayerEntity;I)I"},
       at = @At(
          value = "INVOKE_ASSIGN",
          target = "Lnet/minecraft/enchantment/EnchantmentHelper;chooseEquipmentWith(Lnet/minecraft/component/ComponentType;Lnet/minecraft/entity/LivingEntity;Ljava/util/function/Predicate;)Ljava/util/Optional;"
@@ -146,7 +146,7 @@ public abstract class MixinExperienceOrb extends Entity implements IClumpedOrb {
    }
 
    @Inject(
-      method = {"repairPlayerGears(Lnet/minecraft/entity/ExperienceOrbEntity;I)I"},
+      method = {"repairPlayerGears(Lnet/minecraft/server/network/ServerPlayerEntity;I)I"},
       cancellable = true,
       at = {@At(
          value = "INVOKE_ASSIGN",
