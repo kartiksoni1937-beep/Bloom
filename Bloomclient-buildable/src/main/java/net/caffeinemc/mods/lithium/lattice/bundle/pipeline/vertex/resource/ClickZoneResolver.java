@@ -19,7 +19,6 @@ import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.FrameClockCache
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.GridResolver;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.InitExecutor;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.LockD;
-import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.AnchorSequence;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.SlotInspector;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.TaskJoiner;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.ViewLocator;
@@ -542,7 +541,7 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
             // Strict placement state: the target must be empty and supported below.
             if (this.bp == null
                || !a.world.getBlockState(this.bp).isReplaceable()
-               || !a.world.getBlockState(this.bp.down()).isSolid()) {
+               || a.world.getBlockState(this.bp.down()).isAir()) {
                this.aj();
                return;
             }
@@ -552,17 +551,14 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
                } else if (CalculateMapper.a(1, 100) > this.ay.g()) {
                   this.w();
                } else {
-                  // 1-tick anchor: place, charge and detonate with sequenced raw packets.
-                  BlockPos var2 = this.bp;
-                  this.bm = this.o() + this.bb.ns();
-                  this.bn = this.q() + r(this.bb.p());
-                  if (AnchorSequence.placeChargeDetonate(var2)) {
-                     this.ce.add(var2);
-                     this.ae();
-                     this.ai(var2);
-                  } else {
-                     this.aj();
-                  }
+                  this.x(var1);
+                  this.ce.add(this.bp);
+                  this.ae();
+                  // The glowstone packet may not share this tick with the anchor packet.
+                  this.pendingCharge = true;
+                  this.pendingChargePos = this.bp;
+                  this.pendingChargeAge = a.player.age;
+                  this.bl = 2;
                }
             }
          }
@@ -580,7 +576,7 @@ public final class ClickZoneResolver extends BuilderFactory implements InitNotif
          if (this.pendingChargePos == null
             || !TaskJoiner.a(this.pendingChargePos, Blocks.RESPAWN_ANCHOR)
             || (Integer)a.world.getBlockState(this.pendingChargePos).get(RespawnAnchorBlock.CHARGES) != 0
-            || !a.world.getBlockState(this.pendingChargePos.down()).isSolid()) {
+            || a.world.getBlockState(this.pendingChargePos.down()).isAir()) {
             this.clearPendingCharge();
             this.aj();
             return;

@@ -39,10 +39,6 @@ public class LinkCacheLoader extends BuilderFactory implements InitNotifier, Cal
    private long x;
    private boolean y;
    private final Runnable z;
-   // Strict boolean lock: an attack packet may never share a tick with a crystal
-   // placement. Set after the placement packet, cleared at the start of a client tick.
-   private boolean justPlacedCrystal = false;
-   private Runnable crystalTickReset;
    public static volatile boolean NB;
    private static int aa = Runtime.getRuntime().availableProcessors() - Runtime.getRuntime().availableProcessors();
 
@@ -91,8 +87,6 @@ public class LinkCacheLoader extends BuilderFactory implements InitNotifier, Cal
       this.x = var1;
       this.y = false;
       FrameClockCache.a(this.z);
-      this.crystalTickReset = this::resetCrystalLock;
-      FrameClockCache.addTickStart(this.crystalTickReset);
       super.c();
    }
 
@@ -102,11 +96,6 @@ public class LinkCacheLoader extends BuilderFactory implements InitNotifier, Cal
       this.b.b(InitNotifier.class, this);
       this.b.b(CalculateRange.class, this);
       FrameClockCache.b(this.z);
-      if (this.crystalTickReset != null) {
-         FrameClockCache.removeTickStart(this.crystalTickReset);
-         this.crystalTickReset = null;
-      }
-      this.justPlacedCrystal = false;
       this.y = false;
       NB = false;
       super.d();
@@ -162,9 +151,6 @@ public class LinkCacheLoader extends BuilderFactory implements InitNotifier, Cal
             if (var2 - this.x >= 0L && var1 instanceof EntityHitResult var4) {
                Entity var5 = var4.getEntity();
                if (var5 instanceof EndCrystalEntity) {
-                  if (this.justPlacedCrystal) {
-                     return;
-                  }
                   if (this.g.f()) {
                      BufferNormalizer.d(0);
                   }
@@ -183,25 +169,17 @@ public class LinkCacheLoader extends BuilderFactory implements InitNotifier, Cal
                && var1.getType() == HitResult.Type.BLOCK
                && a.player.getMainHandStack().isOf(Items.END_CRYSTAL)) {
                BlockPos var7 = var6.getBlockPos();
-               if ((TaskJoiner.a(var7, Blocks.OBSIDIAN) || TaskJoiner.a(var7, Blocks.BEDROCK))
-                  && NodeKeeper.a(var7)
-                  && a.world.getBlockState(var7.down()).isSolid()
-                  && a.world.getBlockState(var7.up()).isAir()) {
+               if ((TaskJoiner.a(var7, Blocks.OBSIDIAN) || TaskJoiner.a(var7, Blocks.BEDROCK)) && NodeKeeper.a(var7)) {
                   if (this.g.f()) {
                      BufferNormalizer.d(1);
                   }
 
                   GridResolver.a(var6, true);
-                  this.justPlacedCrystal = true;
                   this.w = d(this.w, var2) + this.s.ns();
                }
             }
          }
       }
-   }
-
-   private void resetCrystalLock() {
-      this.justPlacedCrystal = false;
    }
 
    private static long d(long var0, long var2) {

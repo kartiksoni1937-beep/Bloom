@@ -13,8 +13,6 @@ public final class FrameClockCache {
    public static volatile int interactBlockAge = Integer.MIN_VALUE;
    private static volatile Runnable[] o = new Runnable[0];
    private static volatile Runnable[] p = new Runnable[0];
-   // Runs once at the start of every client tick, before any module tick work.
-   private static volatile Runnable[] q = new Runnable[0];
 
    private FrameClockCache() {
    }
@@ -35,20 +33,7 @@ public final class FrameClockCache {
 
       o = d(o, var0);
       p = d(p, var0);
-      q = d(q, var0);
-      any = o.length + p.length + q.length > 0;
-   }
-
-   public static synchronized void addTickStart(Runnable var0) {
-
-      q = c(q, var0);
-      any = o.length + p.length + q.length > 0;
-   }
-
-   public static synchronized void removeTickStart(Runnable var0) {
-
-      q = d(q, var0);
-      any = o.length + p.length + q.length > 0;
+      any = o.length + p.length > 0;
    }
 
    private static Runnable[] c(Runnable[] var0, Runnable var1) {
@@ -94,9 +79,7 @@ public final class FrameClockCache {
 
       Runnable[] var0 = o;
       Runnable[] var1 = p;
-      Runnable[] var2 = q;
-      if (var0.length + var1.length + var2.length != 0 && ConfigBridge.c != null && ConfigBridge.c.a()) {
-         f(var2);
+      if (var0.length + var1.length != 0 && ConfigBridge.c != null && ConfigBridge.c.a()) {
          f(var0);
          f(var1);
       }

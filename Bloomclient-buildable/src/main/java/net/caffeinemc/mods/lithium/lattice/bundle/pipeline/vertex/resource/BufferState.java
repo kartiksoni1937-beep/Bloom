@@ -15,7 +15,6 @@ import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.BufferNormalize
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.CalculateMapper;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.FrameClockCache;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.GridResolver;
-import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.AnchorSequence;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.InitExecutor;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.SlotInspector;
 import net.caffeinemc.mods.lithium.lattice.bundle.pipeline.shard.TaskJoiner;
@@ -239,17 +238,6 @@ public final class BufferState extends BuilderFactory implements InitNotifier, n
                   }
 
                   this.f(var2, var4);
-               } else if (a.player.getMainHandStack().isOf(Items.RESPAWN_ANCHOR)
-                  && this.k(Items.GLOWSTONE) >= 0
-                  && this.g(this.aw, this.ax)) {
-                  // 1-tick anchor: place, charge and detonate in one client tick.
-                  BlockPos var5 = a.world.getBlockState(var4).isReplaceable() ? var4 : var4.offset(var2.getSide());
-                  if (AnchorSequence.placeChargeDetonate(var5)) {
-                     this.aw = FrameClockCache.g(this.aj.p());
-                     this.ax = this.i_r98() + j(this.aj.p());
-                     this.be = a.player.age;
-                     this.q();
-                  }
                }
             }
          }
@@ -259,15 +247,6 @@ public final class BufferState extends BuilderFactory implements InitNotifier, n
    private void f(BlockHitResult var1, BlockPos var2) {
 
       ClientPlayerEntity var3 = a.player;
-      // 1-tick anchor: charge and detonate the anchor with sequenced raw packets.
-      if (this.u(var2) && this.g(this.at, this.au) && AnchorSequence.chargeDetonate(var2)) {
-         this.at = FrameClockCache.g(this.ah.p());
-         this.au = this.i_r98() + j(this.ah.p());
-         this.be = var3.age;
-         this.q();
-         return;
-      }
-
       if (var3.age == this.bd) {
          this.o(var3);
       } else {
